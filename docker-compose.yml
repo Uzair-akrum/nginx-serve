@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+
+  server1:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - nginx-network
+    hostname: server1
+  server2:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./server:/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - nginx-network
+    hostname: server2
+  
+  server3:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./server:/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - nginx-network
+    hostname: server3
+  
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "81:80"
+    depends_on:
+      - server1
+      - server2
+      - server3
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    driver: bridge
